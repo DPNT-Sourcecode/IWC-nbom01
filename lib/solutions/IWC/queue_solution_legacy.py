@@ -98,7 +98,7 @@ class Queue:
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
-            if self._ignore_duplicated_task(original_queue, item):
+            if self._ignore_duplicated_task(original_queue, task):
                 continue     
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
@@ -248,6 +248,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
