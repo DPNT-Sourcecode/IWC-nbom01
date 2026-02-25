@@ -82,9 +82,6 @@ class Queue:
     @staticmethod
     def _earliest_group_timestamp_for_task(task):
         metadata = task.metadata
-
-        print(metadata.get("group_earliest_timestamp", MAX_TIMESTAMP))
-        print(type(metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)))
         return metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
 
     @staticmethod
@@ -282,6 +279,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
