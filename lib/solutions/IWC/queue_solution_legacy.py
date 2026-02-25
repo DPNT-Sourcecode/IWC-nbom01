@@ -52,6 +52,7 @@ REGISTERED_PROVIDERS: list[Provider] = [
 class Queue:
     def __init__(self):
         self._queue = []
+        self._counter = 0
 
     def _collect_dependencies(self, task: TaskSubmission) -> list[TaskSubmission]:
         provider = next((p for p in REGISTERED_PROVIDERS if p.name == task.provider), None)
@@ -97,6 +98,10 @@ class Queue:
     def _get_fifo(task):
         metadata = task.metadata
         return metadata.get("fifo_position", float("inf"))
+    
+    def get_inc_counter(self):
+        self._counter +=1
+        return self._counter
 
     
     def _age_of_task_from_youngest_task_seconds(self, task):
@@ -147,7 +152,7 @@ class Queue:
                 metadata.setdefault("priority", Priority.NORMAL)
 
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-            # metadata.setdefault("fifo_position", MAX_TIMESTAMP)
+            metadata.setdefault("fifo_position", self.get_inc_counter())
             self._queue.append(task)
         self._clear_duplicated_tasks()
         return self.size
@@ -171,7 +176,7 @@ class Queue:
             metadata = task.metadata
             current_earliest = metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
             raw_priority = metadata.get("priority")
-            metadata["fifo_position"] = i
+            # metadata["fifo_position"] = i
             try:
                 priority_level = Priority(raw_priority)
             except (TypeError, ValueError):
@@ -326,5 +331,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
