@@ -94,8 +94,6 @@ class Queue:
         return any(new_task.core_task_values() == existing_task.core_task_values() for existing_task in tasks)
 
     def enqueue(self, item: TaskSubmission) -> int:
-
-           
         original_queue = [*self._queue]
         tasks = [*self._collect_dependencies(item), item]
 
@@ -250,6 +248,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
