@@ -93,6 +93,12 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
     
+    @staticmethod
+    def _get_fifo(task):
+        metadata = task.metadata
+        return metadata.get("fifo_position", float("inf"))
+
+    
     def _age_of_task_from_youngest_task_seconds(self, task):
         sortedQueue = sorted(self._queue, key=lambda x :self._timestamp_for_task(x))
         bottom = self._timestamp_for_task(sortedQueue[-1])
@@ -153,10 +159,11 @@ class Queue:
             priority_timestamps[user_id] = earliest_timestamp_dt
             task_count[user_id] = len(user_tasks)
 
-        for task in self._queue:
+        for i, task in enumerate(self._queue):
             metadata = task.metadata
             current_earliest = metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
             raw_priority = metadata.get("priority")
+            metadata["fifo_position"] = i
             try:
                 priority_level = Priority(raw_priority)
             except (TypeError, ValueError):
@@ -183,11 +190,16 @@ class Queue:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
+
+
+
         self._queue.sort(
             key=lambda i: (
                 self._priority_for_task(i),
                 self._earliest_group_timestamp_for_task(i),
                 self._timestamp_for_task(i),
+                self._get_fifo(i)
+
             )
         )
         print(self._queue)
@@ -305,6 +317,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
