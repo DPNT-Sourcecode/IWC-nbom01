@@ -190,7 +190,18 @@ class Queue:
 
     @property
     def age(self):
-        return 0
+        if self.size == 0:
+            return None
+
+        sortedQueue = sorted(self._queue, key=lambda x:datetime.fromisoformat(x.timestamp).replace(tzinfo=None))
+
+        top = datetime.fromisoformat(sortedQueue[0].timestamp).replace(tzinfo=None)
+        bottom = datetime.fromisoformat(sortedQueue[-1].timestamp).replace(tzinfo=None)
+
+        age_secs = int((bottom - top).total_seconds())
+
+        return age_secs
+
 
     def purge(self):
         self._queue.clear()
@@ -279,8 +290,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
-
-

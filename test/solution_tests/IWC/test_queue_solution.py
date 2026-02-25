@@ -142,4 +142,3 @@ def test_age() -> None:
         call_age().expect(4),
 
     ])
-
