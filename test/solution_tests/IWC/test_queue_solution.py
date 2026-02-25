@@ -40,12 +40,26 @@ def test_timestamp_ordering() -> None:
 
 def test_dependancy_resolution() -> None:
     run_queue([
-        call_enqueue("credit_check", 1, iso_ts(delta_minutes=5)).expect(1),
+        call_enqueue("credit_check", 1, iso_ts(delta_minutes=0)).expect(1),
         call_size().expect(2),
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("credit_check", 1),
         call_size().expect(0),
     ])
+
+
+
+def test_deduplication() -> None:
+    run_queue([
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=5)).expect(1),
+        call_enqueue("id_verification", 1, iso_ts(delta_minutes=5)).expect(1),
+        call_size().expect(2),
+        call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("id_verification", 1),
+        call_size().expect(0),
+    ])
+
 
 
 
