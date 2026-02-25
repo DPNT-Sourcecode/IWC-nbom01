@@ -71,10 +71,8 @@ class Queue:
     @staticmethod
     def _priority_for_task(task):
         metadata = task.metadata
-        if (task.provider == "bank_statements"):
-            raw_priority = metadata.get("priority", Priority.LOW)
-        else:
-            raw_priority = metadata.get("priority", Priority.NORMAL)
+
+        raw_priority = metadata.get("priority", Priority.NORMAL)
         try:
             return Priority(raw_priority)
         except (TypeError, ValueError):
@@ -120,7 +118,12 @@ class Queue:
         tasks = [*self._collect_dependencies(item), item]
         for task in tasks:
             metadata = task.metadata
-            metadata.setdefault("priority", Priority.NORMAL)
+
+            if (task.provider == "bank_statements"):
+                metadata.setdefault("priority", Priority.LOW)
+            else:
+                metadata.setdefault("priority", Priority.NORMAL)
+
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
             self._queue.append(task)
         self._clear_duplicated_tasks()
@@ -271,4 +274,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
