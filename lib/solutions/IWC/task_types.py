@@ -18,8 +18,6 @@ class TaskSubmission:
     def core_task_values(self) -> tuple[str, int]:
         return (self.provider, self.user_id)
     
-    def __str__(self):
-        return f"{self.provider}_{self.user_id}_{self.timestamp}"
 
 @dataclass
 class TaskDispatch:
@@ -30,4 +28,5 @@ class TaskDispatch:
 
 
 __all__ = ["TaskSubmission", "TaskDispatch"]
+
 
