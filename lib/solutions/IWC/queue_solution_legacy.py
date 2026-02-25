@@ -92,19 +92,18 @@ class Queue:
     
     def _duplicate_task_and_older(self, old_task, new_task):
         if (old_task.core_task_values() == new_task.core_task_values()):
-            if (task)
+            if (old_task._timestamp_for_task() > new_task._timestamp_for_task()):
+                return 
+
 
     def _ignore_duplicated_task(self, tasks, new_task):
-
-
-        return any( for existing_task in tasks)
+        return any(existing_task.core_task_values() == new_task.core_task_values() for existing_task in tasks)
 
     def enqueue(self, item: TaskSubmission) -> int:
         original_queue = [*self._queue]
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
- 
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
@@ -255,4 +254,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
