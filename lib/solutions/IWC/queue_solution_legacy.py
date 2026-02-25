@@ -147,7 +147,7 @@ class Queue:
                 metadata.setdefault("priority", Priority.NORMAL)
 
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-            metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+            # metadata.setdefault("fifo_position", MAX_TIMESTAMP)
             self._queue.append(task)
         self._clear_duplicated_tasks()
         return self.size
@@ -326,4 +326,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
