@@ -193,6 +193,8 @@ class Queue:
                         metadata["priority"] = Priority.NORMAL
                     else:
                         metadata["priority"] = Priority.HIGH
+                elif  task.provider == "bank_statements" and self._age_of_task_from_youngest_task_seconds(task) < 5*60:
+                    metadata["priority"] = Priority.HIGH
                 elif  task.provider == "bank_statements" and self._age_of_task_from_youngest_task_seconds(task) > 5*60:
                     metadata["priority"] = Priority.NORMAL
                 elif priority_level == Priority.NORMAL or priority_level == Priority.LOW:
@@ -331,6 +333,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
