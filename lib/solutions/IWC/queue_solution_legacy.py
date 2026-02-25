@@ -90,7 +90,7 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
     
-    def _ignore_duplicated_task(tasks, new_task):
+    def _ignore_duplicated_task(self, tasks, new_task):
         return any(new_task.core_task_values() == existing_task.core_task_values() for existing_task in tasks)
 
     def enqueue(self, item: TaskSubmission) -> int:
@@ -247,8 +247,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
-
-
