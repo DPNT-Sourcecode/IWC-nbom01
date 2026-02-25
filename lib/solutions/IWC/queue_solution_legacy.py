@@ -81,6 +81,9 @@ class Queue:
     @staticmethod
     def _earliest_group_timestamp_for_task(task):
         metadata = task.metadata
+
+        print(metadata.get("group_earliest_timestamp", MAX_TIMESTAMP))
+        print(type(metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)))
         return metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
 
     @staticmethod
@@ -140,9 +143,9 @@ class Queue:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
             earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
             
-            earliest_timestamp_dt = datetime.strptime(earliest_timestamp, "%Y-%m-%d %H:%M:%S%z")
+            earliest_timestamp_dt = datetime.strptime(earliest_timestamp, "%Y-%m-%d %H:%M:%S%z").replace(tzinfo=None)
             print(earliest_timestamp)
-            print(earliest_timestamp_dt)
+            print(earliest_timestamp)
             
             priority_timestamps[user_id] = earliest_timestamp_dt
             task_count[user_id] = len(user_tasks)
@@ -282,3 +285,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
