@@ -193,7 +193,7 @@ class Queue:
     @property
     def age(self):
         if self.size == 0:
-            return None
+            return 0
 
         sortedQueue = sorted(self._queue, key=lambda x :self._timestamp_for_task(x))
 
