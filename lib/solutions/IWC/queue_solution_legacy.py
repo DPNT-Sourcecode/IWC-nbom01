@@ -95,11 +95,11 @@ class Queue:
     
     def _age_of_task_from_youngest_task_seconds(self, task):
         sortedQueue = sorted(self._queue, key=lambda x :self._timestamp_for_task(x))
-        top = self._timestamp_for_task(sortedQueue[0])
+        bottom = self._timestamp_for_task(sortedQueue[-1])
         task_time = self._timestamp_for_task(task)
-        print(top)
+        print(bottom)
         print(task_time)
-        return (task_time - top).total_seconds()
+        return (bottom - task_time).total_seconds()
     
 
     def _ignore_duplicated_task(self, tasks, new_task):
@@ -165,15 +165,15 @@ class Queue:
             if priority_level is None or priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task.provider == "bank_statements":
-                    print(self._age_of_task_seconds(task))
+                    print(self._age_of_task_from_youngest_task_seconds(task))
 
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
-                    if task.provider == "bank_statements" and self._age_of_task_seconds(task) < 5*60:
+                    if task.provider == "bank_statements" and self._age_of_task_from_youngest_task_seconds(task) < 5*60:
                         metadata["priority"] = Priority.NORMAL
                     else:
                         metadata["priority"] = Priority.HIGH
-                elif  task.provider == "bank_statements" and self._age_of_task_seconds(task) > 5*60:
+                elif  task.provider == "bank_statements" and self._age_of_task_from_youngest_task_seconds(task) > 5*60:
                     metadata["priority"] = Priority.NORMAL
                 elif priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                     metadata["priority"] = priority_level
@@ -305,6 +305,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
