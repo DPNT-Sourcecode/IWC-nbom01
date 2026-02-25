@@ -97,15 +97,11 @@ class Queue:
 
     def _clear_duplicated_tasks(self):
         original_queue = [*self._queue]
-        print("$$$$$$$$$$$$$$$$$$$$$")
-        print(original_queue)
         original_queue.sort(
             key=lambda i: (
                 self._timestamp_for_task(i),
             )
         )
-        print(original_queue)
-        print("^^^^^^^^^^^^^^^^^^^^^")
         new_queue = []
         for task in original_queue:
             if (self._ignore_duplicated_task(new_queue, task)):
@@ -117,20 +113,13 @@ class Queue:
 
 
     def enqueue(self, item: TaskSubmission) -> int:
-        original_queue = [*self._queue]
         tasks = [*self._collect_dependencies(item), item]
-        print("@@@@@@@@@@@@@@@@@@@@@@@")
-        print(original_queue)
-        print(tasks)
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-            if self._ignore_duplicated_task(original_queue, task):
-                continue    
             self._queue.append(task)
         self._clear_duplicated_tasks()
-        print(self._queue)
         return self.size
 
     def dequeue(self):
@@ -275,5 +264,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
