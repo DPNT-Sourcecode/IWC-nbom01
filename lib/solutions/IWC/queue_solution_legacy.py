@@ -98,13 +98,15 @@ class Queue:
 
 
     def _ignore_duplicated_task(self, tasks, new_task):
-        print(tasks)
+        
         return any(self._is_duplicate_task_and_older(existing_task, new_task) for existing_task in tasks)
 
     def enqueue(self, item: TaskSubmission) -> int:
         original_queue = [*self._queue]
         tasks = [*self._collect_dependencies(item), item]
-
+        print("@@@@@@@@@@@@@@@@@@@@@@@")
+        print(original_queue)
+        print(tasks)
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
@@ -112,6 +114,7 @@ class Queue:
             if self._ignore_duplicated_task(original_queue, task):
                 continue    
             self._queue.append(task)
+        print(self._queue)
         return self.size
 
     def dequeue(self):
@@ -256,6 +259,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
