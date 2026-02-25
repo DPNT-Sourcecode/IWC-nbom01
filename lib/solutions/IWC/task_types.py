@@ -15,6 +15,9 @@ class TaskSubmission:
     timestamp: datetime | str
     metadata: dict[str, object] = field(default_factory=dict)
 
+    def core_task_values(self) -> tuple[str, int]:
+        return (self.provider, self.user_id)
+
 @dataclass
 class TaskDispatch:
     """Typed payload returned by ``Queue.dequeue``."""
@@ -24,3 +27,4 @@ class TaskDispatch:
 
 
 __all__ = ["TaskSubmission", "TaskDispatch"]
+
