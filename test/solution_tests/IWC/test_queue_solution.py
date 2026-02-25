@@ -65,11 +65,12 @@ def test_deduplication_and_dependancy() -> None:
         call_enqueue("companies_house", 1, iso_ts(delta_minutes=5)).expect(2),
         call_enqueue("id_verification", 1, iso_ts(delta_minutes=5)).expect(3),
         call_size().expect(3),
-        call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("credit_check", 1),
+        call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("id_verification", 1),
         call_size().expect(0),
     ])
+
 
 
 
