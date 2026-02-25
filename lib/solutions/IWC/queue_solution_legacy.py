@@ -10,6 +10,7 @@ class Priority(IntEnum):
     """Represents the queue ordering tiers observed in the legacy system."""
     HIGH = 1
     NORMAL = 2
+    LOW = 3
 
 @dataclass
 class Provider:
@@ -70,7 +71,10 @@ class Queue:
     @staticmethod
     def _priority_for_task(task):
         metadata = task.metadata
-        raw_priority = metadata.get("priority", Priority.NORMAL)
+        if (task.provider == "bank_statements"):
+            raw_priority = metadata.get("priority", Priority.LOW)
+        else:
+            raw_priority = metadata.get("priority", Priority.NORMAL)
         try:
             return Priority(raw_priority)
         except (TypeError, ValueError):
@@ -264,6 +268,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
