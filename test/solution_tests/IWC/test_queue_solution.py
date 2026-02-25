@@ -103,16 +103,16 @@ def test_deduplication_and_dependancy_and_timestamps() -> None:
 
 def test_deprioritizing_bank_statements() -> None:
     run_queue([
-        call_enqueue("companies_house", 1, iso_ts(delta_minutes=10)).expect(1),
-        call_enqueue("credit_check", 1, iso_ts(delta_minutes=5)).expect(2),
-        call_enqueue("companies_house", 1, iso_ts(delta_minutes=0)).expect(2),
-        call_enqueue("id_verification", 1, iso_ts(delta_minutes=5)).expect(3),
-        call_size().expect(3),
-        call_dequeue().expect("companies_house", 1),
-        call_dequeue().expect("credit_check", 1),
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue("id_verification", 1, iso_ts(delta_minutes=1)).expect(2),
+        call_enqueue("companies_house",2, iso_ts(delta_minutes=2)).expect(2),
+         call_size().expect(3),
         call_dequeue().expect("id_verification", 1),
+        call_dequeue().expect("id_verification", 2),
+        call_dequeue().expect("bank_statements", 1),
         call_size().expect(0),
     ])
+
 
 
 
