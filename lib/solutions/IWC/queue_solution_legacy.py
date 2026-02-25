@@ -110,7 +110,7 @@ class Queue:
         )
         new_queue = []
         for task in original_queue:
-            if (self._ignore_duplicated_task(original_queue, task)):
+            if (self._ignore_duplicated_task(new_queue, task)):
                 continue
             else:
                 new_queue.append(task)
@@ -277,3 +277,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
