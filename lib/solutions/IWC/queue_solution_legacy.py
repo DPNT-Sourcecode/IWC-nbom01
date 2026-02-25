@@ -93,12 +93,13 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
     
-    def _age_of_task_seconds(self, task):
-        now = datetime.now()
-        print(now)
+    def _age_of_task_from_youngest_task_seconds(self, task):
+        sortedQueue = sorted(self._queue, key=lambda x :self._timestamp_for_task(x))
+        top = self._timestamp_for_task(sortedQueue[0])
         task_time = self._timestamp_for_task(task)
+        print(top)
         print(task_time)
-        return (task_time - now).total_seconds()
+        return (task_time - top).total_seconds()
     
 
     def _ignore_duplicated_task(self, tasks, new_task):
@@ -304,5 +305,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
