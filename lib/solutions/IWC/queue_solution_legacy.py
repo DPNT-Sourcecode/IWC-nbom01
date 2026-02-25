@@ -144,9 +144,7 @@ class Queue:
             earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
             
             earliest_timestamp_dt = datetime.strptime(earliest_timestamp, "%Y-%m-%d %H:%M:%S%z").replace(tzinfo=None)
-            print(earliest_timestamp)
-            print(earliest_timestamp)
-            
+
             priority_timestamps[user_id] = earliest_timestamp_dt
             task_count[user_id] = len(user_tasks)
 
@@ -285,4 +283,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
