@@ -95,7 +95,9 @@ class Queue:
     
     def _age_of_task_seconds(self, task):
         now = datetime.now()
+        print(now)
         task_time = self._timestamp_for_task(task)
+        print(task_time)
         return (task_time - now).total_seconds()
     
 
@@ -161,6 +163,9 @@ class Queue:
 
             if priority_level is None or priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
+                if task.provider == "bank_statements":
+                    print(self._age_of_task_seconds(task))
+
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
                     if task.provider == "bank_statements" and self._age_of_task_seconds(task) < 5*60:
@@ -299,4 +304,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
