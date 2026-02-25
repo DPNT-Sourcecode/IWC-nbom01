@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import IntEnum
 
+
 # LEGACY CODE ASSET
 # RESOLVED on deploy
 from solutions.IWC.task_types import TaskSubmission, TaskDispatch
@@ -143,8 +144,7 @@ class Queue:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
             earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
             
-            earliest_timestamp_dt = datetime.strptime(earliest_timestamp, "%Y-%m-%d %H:%M:%S%z").replace(tzinfo=None)
-
+            earliest_timestamp_dt = datetime.fromisoformat(earliest_timestamp).replace(tzinfo=None)
             priority_timestamps[user_id] = earliest_timestamp_dt
             task_count[user_id] = len(user_tasks)
 
@@ -282,6 +282,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
