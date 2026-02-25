@@ -93,7 +93,10 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
     
-
+    def _age_of_task_seconds(self, task):
+        now = datetime.now()
+        task_time = self._timestamp_for_task(task)
+        return (task_time - now).total_seconds()
     
 
     def _ignore_duplicated_task(self, tasks, new_task):
@@ -160,11 +163,14 @@ class Queue:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
-                    if task.provider == "bank_statements":
+                    if task.provider == "bank_statements" and self._age_of_task_seconds(task) < 5*60:
                         metadata["priority"] = Priority.NORMAL
                     else:
                         metadata["priority"] = Priority.HIGH
                 elif priority_level == Priority.NORMAL or priority_level == Priority.LOW:
+                    
+                    
+                    
                     metadata["priority"] = priority_level
                 else: 
                     metadata["priority"] = Priority.NORMAL
@@ -179,6 +185,8 @@ class Queue:
                 self._timestamp_for_task(i),
             )
         )
+        print(self._queue)
+        print("*****************")
 
         task = self._queue.pop(0)
         return TaskDispatch(
@@ -292,4 +300,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-

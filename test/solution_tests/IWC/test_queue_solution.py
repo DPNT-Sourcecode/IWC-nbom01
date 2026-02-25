@@ -169,5 +169,3 @@ def test_deprioritizing_bank_statements_with_rule_of_3() -> None:
         call_dequeue().expect("companies_house", 3),
         call_size().expect(0),
     ])
-
-
