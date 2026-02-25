@@ -156,8 +156,10 @@ class Queue:
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
                     metadata["priority"] = Priority.HIGH
-                else:
-                    metadata["priority"] = Priority.LOW
+                elif priority_level == Priority.NORMAL or priority_level == Priority.LOW:
+                    metadata["priority"] = priority_level
+                else: 
+                    metadata["priority"] = Priority.NORMAL
             else:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
@@ -274,6 +276,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
