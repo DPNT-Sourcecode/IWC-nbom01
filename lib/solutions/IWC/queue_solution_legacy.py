@@ -94,6 +94,8 @@ class Queue:
         return timestamp
     
 
+    
+
     def _ignore_duplicated_task(self, tasks, new_task):
         return any(existing_task.core_task_values() == new_task.core_task_values() for existing_task in tasks)
 
@@ -139,9 +141,9 @@ class Queue:
         priority_timestamps = {}
         for user_id in user_ids:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
-            earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
+            earliest_timestamp_task = sorted(user_tasks, key=lambda t: t.timestamp)[0]
             
-            earliest_timestamp_dt = datetime.fromisoformat(earliest_timestamp).replace(tzinfo=None)
+            earliest_timestamp_dt = self._timestamp_for_task(earliest_timestamp_task)
             priority_timestamps[user_id] = earliest_timestamp_dt
             task_count[user_id] = len(user_tasks)
 
@@ -193,10 +195,10 @@ class Queue:
         if self.size == 0:
             return None
 
-        sortedQueue = sorted(self._queue, key=lambda x:datetime.fromisoformat(x.timestamp).replace(tzinfo=None))
+        sortedQueue = sorted(self._queue, key=lambda x :self._timestamp_for_task(x))
 
-        top = datetime.fromisoformat(sortedQueue[0].timestamp).replace(tzinfo=None)
-        bottom = datetime.fromisoformat(sortedQueue[-1].timestamp).replace(tzinfo=None)
+        top = self._timestamp_for_task(sortedQueue[0])
+        bottom = self._timestamp_for_task(sortedQueue[-1])
 
         age_secs = int((bottom - top).total_seconds())
 
@@ -290,3 +292,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
