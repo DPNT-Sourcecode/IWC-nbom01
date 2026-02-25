@@ -155,7 +155,11 @@ class Queue:
                 metadata["group_earliest_timestamp"] = MAX_TIMESTAMP
                 if task_count[task.user_id] >= 3:
                     metadata["group_earliest_timestamp"] = priority_timestamps[task.user_id]
-                    metadata["priority"] = Priority.HIGH
+                    
+                    if task.provider == "bank_statements":
+                        metadata["priority"] = Priority.NORMAL
+                    else:
+                        metadata["priority"] = Priority.HIGH
                 elif priority_level == Priority.NORMAL or priority_level == Priority.LOW:
                     metadata["priority"] = priority_level
                 else: 
@@ -164,7 +168,6 @@ class Queue:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
-        print(self._queue)
         self._queue.sort(
             key=lambda i: (
                 self._priority_for_task(i),
@@ -173,8 +176,6 @@ class Queue:
             )
         )
 
-        print(self._queue)
-        print("*******************************")
         task = self._queue.pop(0)
         return TaskDispatch(
             provider=task.provider,
@@ -276,6 +277,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
