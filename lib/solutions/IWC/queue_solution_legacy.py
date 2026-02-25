@@ -90,12 +90,6 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
     
-    # def _is_duplicate_task_and_older(self, old_task, new_task):
-    #     if ():
-    #         if (self._timestamp_for_task(old_task) < self._timestamp_for_task(new_task)):
-    #             return True
-    #     return False
-
 
     def _ignore_duplicated_task(self, tasks, new_task):
         return any(existing_task.core_task_values() == new_task.core_task_values() for existing_task in tasks)
@@ -103,11 +97,15 @@ class Queue:
 
     def _clear_duplicated_tasks(self):
         original_queue = [*self._queue]
+        print("$$$$$$$$$$$$$$$$$$$$$")
+        print(original_queue)
         original_queue.sort(
             key=lambda i: (
                 self._timestamp_for_task(i),
             )
         )
+        print(original_queue)
+        print("^^^^^^^^^^^^^^^^^^^^^")
         new_queue = []
         for task in original_queue:
             if (self._ignore_duplicated_task(new_queue, task)):
@@ -277,4 +275,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
