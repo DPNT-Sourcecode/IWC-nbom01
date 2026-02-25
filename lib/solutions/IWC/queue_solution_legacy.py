@@ -129,7 +129,9 @@ class Queue:
         second_new_queue = []
         for task in self._queue:
             if task in new_queue:
+                print(task)
                 second_new_queue.append(task)
+        print("^^^^^^^^^^^^^^^")
         self._queue = second_new_queue
 
 
@@ -198,7 +200,8 @@ class Queue:
 
 
 
-
+        print(self._queue)
+        print("****************1*")
         self._queue.sort(
             key=lambda i: (
                 self._priority_for_task(i),
@@ -323,3 +326,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
