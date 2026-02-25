@@ -125,7 +125,12 @@ class Queue:
                 continue
             else:
                 new_queue.append(task)
-        self._queue = new_queue
+
+        second_new_queue = []
+        for task in self._queue:
+            if task in new_queue:
+                second_new_queue.append(task)
+        self._queue = second_new_queue
 
 
 
@@ -139,6 +144,7 @@ class Queue:
             else:
                 metadata.setdefault("priority", Priority.NORMAL)
 
+            metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
             self._queue.append(task)
         self._clear_duplicated_tasks()
@@ -317,8 +323,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
-
-

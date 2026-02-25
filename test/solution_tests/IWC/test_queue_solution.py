@@ -186,4 +186,3 @@ def test_boosting_bank_statements_older_than_5_minutes_tie_breaker() -> None:
         call_dequeue().expect("companies_house", 3),
         call_size().expect(0),
     ])
-
