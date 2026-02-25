@@ -98,8 +98,18 @@ class Queue:
 
 
     def _ignore_duplicated_task(self, tasks, new_task):
-        
         return any(self._is_duplicate_task_and_older(existing_task, new_task) for existing_task in tasks)
+
+
+    def _clear_duplicated_tasks(self):
+        original_queue = [*self._queue]
+        original_queue.sort(
+            key=lambda i: (
+                self._timestamp_for_task(i),
+            )
+        )
+
+
 
     def enqueue(self, item: TaskSubmission) -> int:
         original_queue = [*self._queue]
@@ -259,6 +269,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
